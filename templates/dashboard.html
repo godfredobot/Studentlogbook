@@ -1,0 +1,140 @@
+{% extends "_base.html" %}
+{% load partials %}
+
+{% block head %}
+<title>Student Logbook Dashboard</title>
+<script src="https://unpkg.com/htmx.org@2.0.3"></script>
+{% endblock head %}
+
+{% block body %}
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content flex flex-col p-4 lg:p-8">
+            <!-- Page content here -->
+            <div class="navbar px-6 bg-base-100 rounded-box shadow mb-4 lg:hidden">
+                <div class="flex-1">
+                    <h1 class="text-xl font-bold">Student Logbook</h1>
+                </div>
+                <div class="flex-none">
+                    <label for="my-drawer-2" class="btn btn-square btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="flex px-6 justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold hidden lg:block">Student Logbook</h1>
+                <button class="btn btn-primary border" onclick="document.getElementById('add-log-modal').showModal()">Add Log</button>
+            </div>
+            
+            <!-- Log entries -->
+            <div class="bg-base-100 p-6 rounded-box shadow mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Log Entries</h2>
+                <div id="logEntries" class="space-y-4">
+                    <!-- Log entries will be inserted here by jinja -->
+                    {% for log in logs %}
+                        {% partialdef logitem-partial inline=True %}
+                            <div class="bg-base-200 p-4 rounded-lg">
+                                <p class="font-semibold text-lg">{{log.date}}</p>
+                                <p class="mt-2">{{log.entry}}</p>
+                            </div>
+                        {% endpartialdef %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div> 
+
+        <div class="drawer-side">
+            <label for="my-drawer-2" class="drawer-overlay"></label> 
+            <div class="menu p-4 w-80 h-full bg-base-100 text-base-content flex-nowrap">
+                <!-- Sidebar content here -->
+                <div class="flex flex-col items-center my-6">
+                    <div class="avatar">
+                        <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <img src="https://avatar.iran.liara.run/public" alt="Student Photo" />
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-bold mt-4">{{ user.name }}</h2>
+                    <p class="text-sm text-base-content/70">{{ user.department }}</p>
+                </div>
+                <div class="divider"></div>
+                <ul class="space-y-2">
+                    <li>
+                        <span class="text-sm text-gray-500 pb-0">Mat no:</span> 
+                        <span class="font-medium pb-0">{{user.mat_no}}</span>
+                    </li>
+                    <li><span class="text-sm text-gray-500 pb-0">Department:</span> 
+                        <span class="font-medium pb-0">{{ user.department }}</span>
+                    </li>
+                    <li>
+                        <span class="text-sm text-gray-500 pb-0">Year:</span>
+                        <span class="font-medium pb-0">3rd Year</span>
+                    </li>
+                    {% comment %} <li>
+                        <span class="text-sm text-gray-500 pb-0">Email:</span>
+                        <span class="font-medium pb-0">john.doe@example.com</span>
+                    </li> {% endcomment %}
+                </ul>
+                <div class="divider"></div>
+                <div class="stat">
+                    <div class="stat-title">Total Log Entries</div>
+                    <div class="stat-value" id="totalEntries">{{ logs|length }}</div>
+                    <div class="stat-desc">Last updated <span id="lastUpdated">never</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Log Entry Modal -->
+    <dialog id="add-log-modal" class="modal ">
+        <form 
+            method="dialog"
+            hx-post="{% url 'add-log' %}"
+            hx-target="#logEntries"
+            hx-swap="beforeend"
+            hx-on::after-request="successfullyAddLogCallback()"
+            class="modal-box w-full max-w-md"
+            >
+            <h3 class="font-bold text-lg mb-4">Add New Log Entry</h3>
+            <div class="form-control">
+                <label class="label" for="logDate">
+                    <span class="label-text">Date</span>
+                </label>
+                {{ log_form.date }}
+            </div>
+            <div class="form-control mt-4">
+                <label class="label" for="logEntry">
+                    <span class="label-text">Log Entry</span>
+                </label>
+                {{ log_form.entry }}
+            </div>
+            <div class="modal-action">
+                <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Log Entry</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script>
+        // Function to update statistics
+        function updateStats(logcount) {
+            document.getElementById('totalEntries').textContent = logcount;
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        }
+
+        // Function to close modal
+        function closeModal() {
+            document.getElementById('add-log-modal').close();
+            document.getElementById('logDate').value = '';
+            document.getElementById('logEntry').value = '';
+        }
+
+        function successfullyAddLogCallback() {
+            const logEntriesDiv = document.getElementById('logEntries');
+            updateStats(logEntriesDiv.childElementCount)
+
+            // close the modal
+            closeModal();
+        }
+    </script>
+{% endblock body %}

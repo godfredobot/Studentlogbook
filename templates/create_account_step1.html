@@ -1,0 +1,60 @@
+{% extends "_base.html" %}
+
+{% block head %}
+<title>Step 1 | Create Account</title>
+{% endblock head %}
+
+{% block body %}
+
+<div class="flex justify-center items-center min-h-screen bg-base-200">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl border">
+      <div class="card-body">
+        <h2 class="card-title">Student Registration</h2>
+        <p class="text-base-content/70">Please enter your details to register.</p>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Full Name Field -->
+            <div class="form-control">
+                <label class="label" for="name">
+                    <span class="label-text">Full Name</span>
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="text-red-500 text-sm">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+        
+            <!-- Department Field -->
+            <div class="form-control">
+                <label class="label" for="dept">
+                    <span class="label-text">Department</span>
+                </label>
+                {{ form.department }}
+                {% if form.department.errors %}
+                    <div class="text-red-500 text-sm">{{ form.department.errors }}</div>
+                {% endif %}
+            </div>
+        
+            <!-- Matriculation Number Field -->
+            <div class="form-control">
+                <label class="label" for="mat_no">
+                    <span class="label-text">Matriculation Number</span>
+                </label>
+                {{ form.mat_no }}
+                {% if form.mat_no.errors %}
+                    <div class="text-red-500 text-sm">{{ form.mat_no.errors }}</div>
+                {% endif %}
+            </div>
+        
+            <!-- Submit Button -->
+            <div class="card-actions justify-end">
+                <button type="submit" class="btn btn-primary w-full">Register</button>
+            </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+
+{% endblock body %}

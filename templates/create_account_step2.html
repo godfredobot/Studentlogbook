@@ -1,0 +1,49 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block head %}
+<title>Step 2 | Create Account</title>
+{% endblock head %}
+
+{% block body %}
+<div class="flex items-center justify-center min-h-screen bg-base-200">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl border">
+        <div class="card-body">
+            <h2 class="card-title">Password Upload</h2>
+            <p class="text-base-content/70">Please enter your new password.</p>
+            <form id="passwordForm" action="{% url "create_account_step2" %}" method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <!-- Password Field -->
+                <div class="form-control">
+                    <label class="label" for="password">
+                        <span class="label-text">Password</span>
+                    </label>
+                    {{ form.password }}
+                    <label class="label">
+                        <span class="label-text-alt text-error" id="passwordError"></span>
+                    </label>
+                </div>
+            
+                <!-- Confirm Password Field -->
+                <div class="form-control">
+                    <label class="label" for="confirmPassword">
+                        <span class="label-text">Confirm Password</span>
+                    </label>
+                    {{ form.confirm_password }}
+                    <label class="label">
+                        <span class="label-text-alt text-error" id="confirmPasswordError"></span>
+                    </label>
+                </div>
+            
+                <!-- Submit Button -->
+                <div class="card-actions justify-end">
+                    <button type="submit" class="btn btn-primary w-full" disabled id="submitBtn">Upload Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/password-validator.js' %}"></script>
+{% endblock body %}
