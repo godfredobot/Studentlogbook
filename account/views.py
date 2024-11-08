@@ -28,6 +28,7 @@ def create_account_step1(request):
 
 def create_account_step2(request):
     account_data = request.session.get('account_data')
+    print(account_data)
 
     if request.method == 'POST':
         form = PasswordForm(request.POST)
@@ -38,7 +39,7 @@ def create_account_step2(request):
             user = User(
                 name=account_data['name'],
                 department=account_data['department'],
-                mathno=account_data['mathno'],
+                mat_no=account_data['mat_no'],
             )
             user.set_password(password)  # Use Django's password hashing
             user.save()

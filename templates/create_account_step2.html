@@ -20,10 +20,19 @@
                         <span class="label-text">Password</span>
                     </label>
                     {{ form.password }}
+                    <div id="passwordCriteria" class="text-sm mt-1">
+                        <p id="lengthCriterion" class="text-red-500">Password must be at least 12 characters long</p>
+                        <p id="uppercaseCriterion" class="text-red-500">Password must contain at least one uppercase letter</p>
+                        <p id="lowercaseCriterion" class="text-red-500">Password must contain at least one lowercase letter</p>
+                        <p id="numberCriterion" class="text-red-500">Password must contain at least one number</p>
+                        <p id="specialCharCriterion" class="text-red-500">Password must contain at least one special character</p>
+                    </div>
                     <label class="label">
                         <span class="label-text-alt text-error" id="passwordError"></span>
                     </label>
+                    <div id="strengthMessage" class="text-sm font-semibold"></div>
                 </div>
+                
             
                 <!-- Confirm Password Field -->
                 <div class="form-control">
